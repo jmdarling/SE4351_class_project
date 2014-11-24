@@ -3,6 +3,9 @@ package com.example.medmemory.model;
 import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.Locale;
+
+import com.example.medmemory.db.Database;
+
 import android.graphics.Bitmap;
 
 /**
@@ -21,17 +24,25 @@ public class Medication {
 	private int maximumPillCount;
 	private Date refillDate;
 	
-	// Static id to keep track of autoinc PK across all instances of Medication:
-	private static int currentId = 0;
+	// Static ID to keep track of autoinc PK:
+	private static int currentId = 1;
 	
 	/**
-	 * Creates a new, empty instance of Medication.
-	 * The new Medication's ID is guaranteed to be unique. It will have an
+	 * Gets the current largest ID across the entire medication table. Guaranteed to be unique.
+	 * @return A unique ID number.
+	 */
+	public static int getCurrentId()
+	{
+		return currentId;
+	}
+	
+	/**
+	 * Creates a new, empty instance of Medication. It will have an
 	 * empty name, image, dosage, and notes. The current pill count and maximum
 	 * pill count will be zero. The refill date will be the Unix epoch.
 	 */
 	public Medication() {
-		this.id = Medication.currentId++;
+		this.id = currentId++;
 		this.name = "";
 		this.image = null;
 		this.dosage = "";
@@ -43,7 +54,6 @@ public class Medication {
 	
 	/**
 	 * Creates a new instance of Medication with the specified parameters.
-	 * The new Medication's ID is guaranteed to be unique.
 	 * @param name					The name of the medication.
 	 * @param image					The image associated with the medication.
 	 * @param doage					The dosage instructions for the medication.
@@ -53,7 +63,7 @@ public class Medication {
 	 * @param refillDate			The estimated refill date of the medication.
 	 */
 	public Medication(String name, Bitmap image, String dosage, String notes, int currentPillCount, int maximumPillCount, Date refillDate) {
-		this.id = Medication.currentId++;
+		this.id = currentId++;
 		this.name = name;
 		this.image = image;
 		this.dosage = dosage;
@@ -92,10 +102,18 @@ public class Medication {
 	 * @return The Medication's image as a byte array.
 	 */
 	public byte[] getImageAsByteArray() {
-		int size = this.image.getByteCount();
-		ByteBuffer buffer = ByteBuffer.allocate(size);
-		image.copyPixelsFromBuffer(buffer);
-		return buffer.array();
+		if (this.image != null) {
+			int size = this.image.getByteCount();
+			
+			if (size > 0) {
+				ByteBuffer buffer = ByteBuffer.allocate(size);
+				image.copyPixelsFromBuffer(buffer);
+				
+				return buffer.array();
+			}
+		}
+		
+		return new byte[] { };
 	}
 	
 	/**
@@ -144,6 +162,13 @@ public class Medication {
 	 */
 	public Date getRefillDate() {
 		return this.refillDate;
+	}
+	
+	/**
+	 * <span style="color: red;"><em>Internal-use only.</em></span>
+	 */
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	/**
@@ -228,16 +253,16 @@ public class Medication {
 	/**
 	 * Indicates the patient has taken a dosage of this Medication. Defaults to one pill.
 	 */
-	public void takeDosage() {
-		takeDosage(1);
+	public int takeDosage() {
+		return Database.takeDosage(this);
 	}
 	
 	/**
 	 * Indicates the patient has taken a dosage of this Medication.
 	 * @param amount	The number of pills taken for this dosage.
 	 */
-	public void takeDosage(int amount) {
-		this.setCurrentPillCount(this.getCurrentPillCount() - amount);
+	public int takeDosage(int amount) {
+		return Database.takeDosage(this, amount);
 		
 		// TODO: recalculate refillDate
 	}
