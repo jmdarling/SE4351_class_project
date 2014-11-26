@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="#000">
+    
+    <TextView
+        android:id="@+id/med_row_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:text="Penicillin"
+        android:textColor="#FFFFFF"
+        android:textSize="28sp"
+        />
+
+    <TextView
+        android:id="@+id/med_row_count" 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:text="10/30"
+        android:textColor="#FFFFFF"
+        android:textSize="28sp"
+        />
+    
+
+</RelativeLayout>
