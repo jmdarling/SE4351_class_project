@@ -16,6 +16,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/reminders"
             android:padding="12dp" 
+            android:onClick="gotoreminders"
              />
 		        
         <ImageButton
@@ -25,13 +26,17 @@
             android:src="@drawable/refills"
             android:gravity="center"
             android:layout_marginLeft="40dp" 
-            android:layout_marginRight="40dp"/>
+            android:layout_marginRight="40dp"
+            android:onClick="gotorefills"
+            />
 
         <ImageButton
             android:id="@+id/imageButton3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/pills" />
+            android:src="@drawable/pills"
+            android:onClick="gotopills" 
+            />
 
     </LinearLayout>
     
@@ -89,6 +94,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/history"
+            android:onClick="gotohistory"
              />
 
         <ImageButton
@@ -98,13 +104,17 @@
             android:layout_marginLeft="45dp"
             android:layout_marginRight="40dp"
             android:gravity="center"
-            android:src="@drawable/doctors" />
+            android:src="@drawable/doctors" 
+            android:onClick="gotodoctors"
+            />
  
         <ImageButton
             android:id="@+id/imageButton6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/pharm" />
+            android:src="@drawable/pharm"
+            android:onClick="gotopharm" 
+            />
 
         
     </LinearLayout>
@@ -159,14 +169,18 @@
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
              android:layout_marginRight="70dp"
-             android:src="@drawable/settings" />
+             android:src="@drawable/settings"
+             android:onClick="gotosettings" 
+             />
 
          <ImageButton
              android:id="@+id/imageButton8"
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
              android:layout_marginLeft="80dp"
-             android:src="@drawable/about" />
+             android:src="@drawable/about" 
+             android:onClick="gotoabout"
+             />
      </LinearLayout>
 
        <LinearLayout
