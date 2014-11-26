@@ -23,6 +23,7 @@ public class Medication {
 	private int currentPillCount;
 	private int maximumPillCount;
 	private Date refillDate;
+	private Date reminderDate;
 	
 	// Static ID to keep track of autoinc PK:
 	private static int currentId = 1;
@@ -39,7 +40,7 @@ public class Medication {
 	/**
 	 * Creates a new, empty instance of Medication. It will have an
 	 * empty name, image, dosage, and notes. The current pill count and maximum
-	 * pill count will be zero. The refill date will be the Unix epoch.
+	 * pill count will be zero. The refill and reminder dates will be the Unix epoch.
 	 */
 	public Medication() {
 		this.id = currentId++;
@@ -50,6 +51,7 @@ public class Medication {
 		this.currentPillCount = 0;
 		this.maximumPillCount = 0;
 		this.refillDate = new Date(0);
+		this.reminderDate = new Date(0);
 	}
 	
 	/**
@@ -61,8 +63,10 @@ public class Medication {
 	 * @param currentPillCount		The current remaining count of pills available for consumption.
 	 * @param maximumPillCount		The maximum amount of pills available.
 	 * @param refillDate			The estimated refill date of the medication.
+	 * @param reminderDate			The reminder date of the medication.
 	 */
-	public Medication(String name, Bitmap image, String dosage, String notes, int currentPillCount, int maximumPillCount, Date refillDate) {
+	public Medication(String name, Bitmap image, String dosage, String notes, int currentPillCount,
+			int maximumPillCount, Date refillDate, Date reminderDate) {
 		this.id = currentId++;
 		this.name = name;
 		this.image = image;
@@ -71,6 +75,7 @@ public class Medication {
 		this.currentPillCount = currentPillCount;
 		this.maximumPillCount = maximumPillCount;
 		this.refillDate = refillDate;
+		this.reminderDate = reminderDate;
 	}
 	
 	/**
@@ -165,6 +170,14 @@ public class Medication {
 	}
 	
 	/**
+	 * Gets this Medication's reminder date.
+	 * @return The Medication's reminder date.
+	 */
+	public Date getReminderDate() {
+		return this.reminderDate;
+	}
+	
+	/**
 	 * <span style="color: red;"><em>Internal-use only.</em></span>
 	 */
 	public void setId(int id) {
@@ -207,6 +220,22 @@ public class Medication {
 	public void setNotes(String notes) {
 		this.notes = notes;
 	}
+	
+	/**
+	 * Sets this Medication's refill date.
+	 * @param date The new refill date for the medication.
+	 */
+	public void setRefillDate(Date date) {
+		this.refillDate = date;
+	}
+
+	/**
+	 * Sets this Medication's reminder date.
+	 * @param date The new reminder date for the medication.
+	 */
+	public void setReminderDate(Date date) {
+		this.reminderDate = date;
+	}
 
 	/**
 	 * Sets this Medication's current pill count. An <code>IllegalArgumentException</code> is thrown when attempting to set this
@@ -240,14 +269,6 @@ public class Medication {
 		}
 		
 		this.maximumPillCount = count;
-	}
-	
-	/**
-	 * Sets this Medication's refill date.
-	 * @param date The new refill date for the medication.
-	 */
-	public void setRefillDate(Date date) {
-		this.refillDate = date;
 	}
 	
 	/**
