@@ -2,10 +2,8 @@ package com.example.medmemory.db;
 
 import java.io.IOException;
 import java.text.*;
-import java.util.Date;
-import java.util.Locale;
-import android.content.ContentValues;
-import android.content.Context;
+import java.util.*;
+import android.content.*;
 import android.database.Cursor;
 
 import com.example.medmemory.model.Medication;
@@ -15,21 +13,71 @@ public class Database {
 	
 	public static Context context;
 	
+	/**
+	 * </strong><em>Internal-use only.</em></strong> Opens a connection to the database suitable for standard CRUD operations.
+	 */
 	private static void openDatabase() {
 		if (databaseHelper == null) {
 			databaseHelper = new DatabaseHelper(context);
 		}
 		
-//		try {
-//			databaseHelper.createEmptyDatabase();
-//		}
-//		catch (IOException ex) {
-//			throw new Error("Unable to create database");
-//		}
+		try {
+			databaseHelper.createEmptyDatabase();
+		}
+		catch (IOException ex) {
+			throw new Error("Unable to create database");
+		}
 		
 		databaseHelper.openDatabase();
 	}
 	
+	/**
+	 * Retrieves all existing Medication records from the database.
+	 * @return		An <code>ArrayList<Medication></code> containing all of the Medication records, or null if
+	 * 				the database contains no Medication records.
+	 */
+	public static ArrayList<Medication> getAllMedications() {
+		ArrayList<Medication> list = null;
+		
+		openDatabase();
+		Cursor cursor = databaseHelper.selectAll();
+		
+
+		if (cursor.moveToFirst()) {
+			list = new ArrayList<Medication>();
+			
+			while (cursor.isAfterLast() == false) {
+				Date refillDate = new Date(0);
+				Date reminderDate = new Date(0);
+				
+				try {
+					refillDate = DatabaseHelper.dateFormat.parse(cursor.getString(cursor.getColumnIndex("refillDate")));
+					reminderDate = DatabaseHelper.dateFormat.parse(cursor.getString(cursor.getColumnIndex("reminderDate")));
+				}
+				catch (ParseException ex) {
+					System.err.printf("Error converting date \"%s\" from database to Date object; PK = %d.",
+						DatabaseHelper.dateFormat.format(refillDate), cursor.getInt(0));
+				}
+				
+				Medication medication = new Medication(cursor.getString(1), DatabaseHelper.convertByteArrayToBitmap(cursor.getBlob(2)),
+					cursor.getString(3), cursor.getString(4), cursor.getInt(5), cursor.getInt(6), refillDate, reminderDate);
+				medication.setId(cursor.getInt(0));
+				
+				list.add(medication);
+				cursor.moveToNext();
+			}
+		}
+		
+		return list;
+	}
+	
+	/**
+	 * Retrieves a Medication record by its ID.
+	 * @param id	The ID of the medication to retrieve. Must be greater than or equal to zero.
+	 * @return		An instance of <code>Medication</code> with values corresponding to the record in the <code>medication</code> table,
+	 * 				or <code>null</code> if one such record does not exist.
+	 * @throws IllegalArgumentException
+	 */
 	public static Medication getMedicationById(int id) throws IllegalArgumentException {
 		if (id < 0) {
 			throw new IllegalArgumentException("'id' must be an integer between 0 and " + Integer.MAX_VALUE + ", inclusive.");
@@ -42,15 +90,19 @@ public class Database {
 		
 		if (cursor.moveToFirst()) {
 			Date refillDate = new Date(0);
+			Date reminderDate = new Date(0);
 			
 			try {
 				refillDate = DatabaseHelper.dateFormat.parse(cursor.getString(cursor.getColumnIndex("refillDate")));
-			} catch (ParseException e) {
-				// TODO
+				reminderDate = DatabaseHelper.dateFormat.parse(cursor.getString(cursor.getColumnIndex("reminderDate")));
+			}
+			catch (ParseException ex) {
+				System.err.printf("Error converting date \"%s\" from database to Date object; PK = %d.",
+					DatabaseHelper.dateFormat.format(refillDate), cursor.getInt(0));
 			}
 			
 			medication = new Medication(cursor.getString(1), DatabaseHelper.convertByteArrayToBitmap(cursor.getBlob(2)),
-				cursor.getString(3), cursor.getString(4), cursor.getInt(5), cursor.getInt(6), refillDate);
+				cursor.getString(3), cursor.getString(4), cursor.getInt(5), cursor.getInt(6), refillDate, reminderDate);
 			medication.setId(id);
 		}
 
@@ -58,6 +110,12 @@ public class Database {
 		return medication;
 	}
 	
+	/**
+	 * Adds a new <code>Medication</code> object to the database.
+	 * @param medication	An instance of <code>Medication</code> to commit to the database.
+	 * @return				True if the record was successfully added; false otherwise.
+	 * @throws IllegalArgumentException
+	 */
 	public static boolean addMedication(Medication medication) throws IllegalArgumentException {
 		if (medication == null) {
 			throw new IllegalArgumentException("'medication' cannot be null.");
@@ -81,7 +139,16 @@ public class Database {
 		databaseHelper.close();
 		return success;
 	}
+
 	
+	/**
+	 * Updates an existing <code>Medication</code> record in the database.
+	 * @param id			The ID of the record to update. Must be greater than or equal to zero.
+	 * @param values		An instance of <code>ContentValues</code> containing the updated values.
+	 * 						Valid keys include name, image, dosage, notes, currentPillCount, maximumPillCount, refillDate, and reminderDate.
+	 * @return				True if the record was successfully updated; false otherwise.
+	 * @throws IllegalArgumentException
+	 */
 	public static boolean updateMedicationById(int id, ContentValues values) throws IllegalArgumentException {
 		if (getMedicationById(id) == null) {
 			throw new IllegalArgumentException("Medication with id " + id + " does not exist.");
@@ -101,7 +168,15 @@ public class Database {
 		databaseHelper.close();
 		return success;
 	}
-	
+
+	/**
+	 * Deletes an existing <code>Medication</code> record in the database.
+	 * @param id			The ID of the record to delete. Must be greater than or equal to zero.
+	 * @param values		An instance of <code>ContentValues</code> containing the updated values.
+	 * 						Valid keys include name, image, dosage, notes, currentPillCount, maximumPillCount, refillDate, and reminderDate.
+	 * @return				True if the record was successfully updated; false otherwise.
+	 * @throws IllegalArgumentException
+	 */
 	public static boolean deleteMedicationById(int id) throws IllegalArgumentException {
 		if (getMedicationById(id) == null) {
 			throw new IllegalArgumentException("Medication with id " + id + " does not exist.");
