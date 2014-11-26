@@ -51,12 +51,19 @@ public class Database {
 				Date reminderDate = new Date(0);
 				
 				try {
-					refillDate = DatabaseHelper.dateFormat.parse(cursor.getString(cursor.getColumnIndex("refillDate")));
-					reminderDate = DatabaseHelper.dateFormat.parse(cursor.getString(cursor.getColumnIndex("reminderDate")));
+					String refillDateString = cursor.getString(cursor.getColumnIndex("refillDate"));
+					String reminderDateString = cursor.getString(cursor.getColumnIndex("reminderDate"));
+					
+					if (refillDateString != null && refillDateString.length() > 0) {
+						refillDate = DatabaseHelper.dateFormat.parse(refillDateString);
+					}
+
+					if (reminderDateString != null && reminderDateString.length()  > 0) {
+						reminderDate = DatabaseHelper.dateFormat.parse(reminderDateString);
+					}
 				}
 				catch (ParseException ex) {
-					System.err.printf("Error converting date \"%s\" from database to Date object; PK = %d.",
-						DatabaseHelper.dateFormat.format(refillDate), cursor.getInt(0));
+					System.err.printf("Error converting date from database to Date object; PK = %d.", cursor.getInt(0));
 				}
 				
 				Medication medication = new Medication(cursor.getString(1), DatabaseHelper.convertByteArrayToBitmap(cursor.getBlob(2)),
@@ -93,12 +100,19 @@ public class Database {
 			Date reminderDate = new Date(0);
 			
 			try {
-				refillDate = DatabaseHelper.dateFormat.parse(cursor.getString(cursor.getColumnIndex("refillDate")));
-				reminderDate = DatabaseHelper.dateFormat.parse(cursor.getString(cursor.getColumnIndex("reminderDate")));
+				String refillDateString = cursor.getString(cursor.getColumnIndex("refillDate"));
+				String reminderDateString = cursor.getString(cursor.getColumnIndex("reminderDate"));
+				
+				if (refillDateString != null && refillDateString.length() > 0) {
+					refillDate = DatabaseHelper.dateFormat.parse(refillDateString);
+				}
+
+				if (reminderDateString != null && reminderDateString.length()  > 0) {
+					reminderDate = DatabaseHelper.dateFormat.parse(reminderDateString);
+				}
 			}
 			catch (ParseException ex) {
-				System.err.printf("Error converting date \"%s\" from database to Date object; PK = %d.",
-					DatabaseHelper.dateFormat.format(refillDate), cursor.getInt(0));
+				System.err.printf("Error converting date from database to Date object; PK = %d.", cursor.getInt(0));
 			}
 			
 			medication = new Medication(cursor.getString(1), DatabaseHelper.convertByteArrayToBitmap(cursor.getBlob(2)),
@@ -124,7 +138,7 @@ public class Database {
 		openDatabase();
 		
 		ContentValues values = new ContentValues();
-		values.putNull("_id");
+		// values.putNull("_id");
 		values.put("name", medication.getName());
 		values.put("image", medication.getImageAsByteArray());
 		values.put("dosage", medication.getDosage());
@@ -132,7 +146,7 @@ public class Database {
 		values.put("currentPillCount", medication.getCurrentPillCount());
 		values.put("maximumPillCount", medication.getMaximumPillCount());
 		values.put("refillDate", DatabaseHelper.dateFormat.format(medication.getRefillDate()));
-		
+		values.put("reminderDate", DatabaseHelper.dateFormat.format(medication.getReminderDate()));
 		
 		boolean success = databaseHelper.insert(values);
 		
@@ -145,7 +159,8 @@ public class Database {
 	 * Updates an existing <code>Medication</code> record in the database.
 	 * @param id			The ID of the record to update. Must be greater than or equal to zero.
 	 * @param values		An instance of <code>ContentValues</code> containing the updated values.
-	 * 						Valid keys include name, image, dosage, notes, currentPillCount, maximumPillCount, refillDate, and reminderDate.
+	 * 						Valid keys include name, image, dosage, notes, currentPillCount, maximumPillCount,
+	 * 						refillDate, and reminderDate.
 	 * @return				True if the record was successfully updated; false otherwise.
 	 * @throws IllegalArgumentException
 	 */

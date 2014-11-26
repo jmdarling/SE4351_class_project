@@ -31,15 +31,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * @throws IOException
 	 */
 	public void createEmptyDatabase() throws IOException {
-		// Create the empty database:
-		this.getReadableDatabase();
+		boolean exists = doesDatabaseExist();
 		
-		// Attempt to copy our premade database to local storage:
-		try {
-			copyPremadeDatabase();
-		}
-		catch (IOException ex) {
-			throw new IOException("Unable to copy database to data directory.");
+		// Avoid overwriting existing DB:
+		if (!exists) {
+			// Create the empty database:
+			this.getReadableDatabase();
+			
+			// Attempt to copy our premade database to local storage:
+			try {
+				copyPremadeDatabase();
+			}
+			catch (IOException ex) {
+				throw new IOException("Unable to copy database to data directory.");
+			}
 		}
 	}
 	
