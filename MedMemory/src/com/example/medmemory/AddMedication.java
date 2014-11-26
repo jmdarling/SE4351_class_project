@@ -4,6 +4,7 @@ import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.sql.Date;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -158,6 +159,11 @@ public class AddMedication extends Activity {
 			notes.setText(editMed.getNotes());
 			image = editMed.getImage();
 			imageView.setImageBitmap(editMed.getImage());
+			
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(editMed.getReminderDate());
+			timePicker.setCurrentHour(cal.get(Calendar.HOUR_OF_DAY));
+			timePicker.setCurrentMinute(cal.get(Calendar.MINUTE));
         }
 	}
 	
