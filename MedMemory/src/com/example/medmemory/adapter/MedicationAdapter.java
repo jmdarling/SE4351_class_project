@@ -40,4 +40,10 @@ public class MedicationAdapter extends ArrayAdapter<Medication>
 		return view;
 	}
 	
+	@Override
+	public int getCount()
+	{
+		return medications.size();
+	}
+	
 }

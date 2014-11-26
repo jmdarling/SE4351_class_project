@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
-    android:background="#000">
+    android:padding="16dp">
     
     <TextView
         android:id="@+id/med_row_name"
@@ -12,8 +11,7 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:text="Penicillin"
-        android:textColor="#FFFFFF"
-        android:textSize="28sp"
+		android:textAppearance="?android:attr/textAppearanceLarge"
         />
 
     <TextView
@@ -23,8 +21,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:text="10/30"
-        android:textColor="#FFFFFF"
-        android:textSize="28sp"
+	    android:textAppearance="?android:attr/textAppearanceLarge"
         />
     
 

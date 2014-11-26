@@ -13,7 +13,7 @@
 
     <ScrollView
         android:id="@+id/scrollView1"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/textView1" >
@@ -24,31 +24,66 @@
             android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="31dp"
                 android:text="Medication Name"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
+            
+            <EditText 
+                android:id="@+id/med_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge" 
+                />
 
             <TextView
-                android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dosage"
+                android:text="Pill Count"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
+            
+            <EditText 
+                android:id="@+id/med_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:inputType="number"
+                />
 
-            <Button
-                android:id="@+id/button1"
+            <TextView
+                android:id="@+id/select_reminder_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge" 
+                android:text="Reminder Time" />
+
+            <TimePicker
+                android:id="@+id/timePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" 
+                android:textAppearance="?android:attr/textAppearanceLarge" 
+                />
+
+			<TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Select days and times" />
-
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="wrap_content"
+                android:text="Notes"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+            
+            <EditText 
+                android:id="@+id/med_notes"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Done" />
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:inputType="textMultiLine"
+                />
+            
+            <Button
+                android:id="@+id/save_med_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save" />
 
         </LinearLayout>
     </ScrollView>
