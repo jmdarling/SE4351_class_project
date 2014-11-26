@@ -1,5 +1,6 @@
 package com.example.medmemory.model;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.Locale;
@@ -7,6 +8,7 @@ import java.util.Locale;
 import com.example.medmemory.db.Database;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 /**
  * Implementation of a simple medication. Corresponds with the medication table in the SQLite DB.
@@ -107,17 +109,18 @@ public class Medication {
 	 * @return The Medication's image as a byte array.
 	 */
 	public byte[] getImageAsByteArray() {
-		if (this.image != null) {
-			int size = this.image.getByteCount();
-			
-			if (size > 0) {
-				ByteBuffer buffer = ByteBuffer.allocate(size);
-				image.copyPixelsFromBuffer(buffer);
-				
-				return buffer.array();
-			}
+		if (this.image == null) {
+			return new byte[] { };
 		}
 		
+		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+		boolean success = this.image.compress(Bitmap.CompressFormat.PNG, 100, outStream);
+		byte[] buffer = outStream.toByteArray();
+		
+		if (success && buffer.length > 0) {
+			return buffer;
+		}
+
 		return new byte[] { };
 	}
 	
@@ -191,7 +194,7 @@ public class Medication {
 	 */
 	public void setName(String name) {
 		if (name == null || name.length() <= 0) {
-			throw new IllegalArgumentException("'name' cannot be null or empty.");
+			name = "Medication";
 		}
 		
 		this.name = name;
@@ -238,34 +241,34 @@ public class Medication {
 	}
 
 	/**
-	 * Sets this Medication's current pill count. An <code>IllegalArgumentException</code> is thrown when attempting to set this
-	 * value to an integer smaller than zero or larger than <code>maximumPillCount</code>.
-	 * @param count The new current pill count.
+	 * Sets the Medication's current pill count. If <code>count</code> is greater than <code>maximumPillCount</code>, 
+	 * <code>maximumPillCount</code>, will be set to <code>count</code>.
+	 * @param count The new current pill count; must be greater than or equal to zero.
 	 */
-	public void setCurrentPillCount(int count) throws IllegalArgumentException {
+	public void setCurrentPillCount(int count) {
 		if (count < 0) {
-			throw new IllegalArgumentException("'count' must be greater than 0.");
+			count = 0;
 		}
 
 		if (count > this.maximumPillCount) {
-			throw new IllegalArgumentException("'count' must be less than or equal to maximumPillCount.");
+			this.setMaximumPillCount(count);
 		}
 		
 		this.currentPillCount = count;
 	}
 
 	/**
-	 * Sets this Medication's maximum pill count. An <code>IllegalArgumentException</code> is thrown when attempting to set this
-	 * value to an integer smaller than zero or <code>currentPillCount</code>.
-	 * @param count The new maximum pill count.
+	 * Sets the Medication's maximum pill count. If <code>count</code> is less than <code>currentPillCount</code>, 
+	 * <code>currentPillCount</code>, will be set to <code>count</code>.
+	 * @param count The new maximum pill count; must be greater than or equal to zero.
 	 */
-	public void setMaximumPillCount(int count) throws IllegalArgumentException {
+	public void setMaximumPillCount(int count) {
 		if (count < 0) {
-			throw new IllegalArgumentException("'count' must be greater than 0.");
+			count = 0;
 		}
 
 		if (count < this.currentPillCount) {
-			throw new IllegalArgumentException("'count' must be greater than or equal to currentPillCount.");
+			this.setCurrentPillCount(count);
 		}
 		
 		this.maximumPillCount = count;

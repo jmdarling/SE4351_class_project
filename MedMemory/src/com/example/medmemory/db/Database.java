@@ -5,6 +5,7 @@ import java.text.*;
 import java.util.*;
 import android.content.*;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 
 import com.example.medmemory.model.Medication;
 
@@ -25,7 +26,7 @@ public class Database {
 			databaseHelper.createEmptyDatabase();
 		}
 		catch (IOException ex) {
-			throw new Error("Unable to create database");
+			throw new Error("FATAL: Unable to create database");
 		}
 		
 		databaseHelper.openDatabase();
@@ -66,8 +67,11 @@ public class Database {
 					System.err.printf("Error converting date from database to Date object; PK = %d.", cursor.getInt(0));
 				}
 				
-				Medication medication = new Medication(cursor.getString(1), DatabaseHelper.convertByteArrayToBitmap(cursor.getBlob(2)),
-					cursor.getString(3), cursor.getString(4), cursor.getInt(5), cursor.getInt(6), refillDate, reminderDate);
+				byte[] blob = cursor.getBlob(2);
+				Bitmap image = DatabaseHelper.convertByteArrayToBitmap(blob);
+				
+				Medication medication = new Medication(cursor.getString(1), image, cursor.getString(3), cursor.getString(4),
+						cursor.getInt(5), cursor.getInt(6), refillDate, reminderDate);
 				medication.setId(cursor.getInt(0));
 				
 				list.add(medication);
@@ -83,11 +87,11 @@ public class Database {
 	 * @param id	The ID of the medication to retrieve. Must be greater than or equal to zero.
 	 * @return		An instance of <code>Medication</code> with values corresponding to the record in the <code>medication</code> table,
 	 * 				or <code>null</code> if one such record does not exist.
-	 * @throws IllegalArgumentException
 	 */
-	public static Medication getMedicationById(int id) throws IllegalArgumentException {
+	public static Medication getMedicationById(int id) {
 		if (id < 0) {
-			throw new IllegalArgumentException("'id' must be an integer between 0 and " + Integer.MAX_VALUE + ", inclusive.");
+			System.err.printf("[DB] 'id' must be >= 0.\n");
+			return null;
 		}
 		
 		openDatabase();
@@ -115,9 +119,12 @@ public class Database {
 				System.err.printf("Error converting date from database to Date object; PK = %d.", cursor.getInt(0));
 			}
 			
-			medication = new Medication(cursor.getString(1), DatabaseHelper.convertByteArrayToBitmap(cursor.getBlob(2)),
-				cursor.getString(3), cursor.getString(4), cursor.getInt(5), cursor.getInt(6), refillDate, reminderDate);
-			medication.setId(id);
+			byte[] blob = cursor.getBlob(2);
+			Bitmap image = DatabaseHelper.convertByteArrayToBitmap(blob);
+			
+			medication = new Medication(cursor.getString(1), image, cursor.getString(3), cursor.getString(4),
+					cursor.getInt(5), cursor.getInt(6), refillDate, reminderDate);
+			medication.setId(cursor.getInt(0));
 		}
 
 		databaseHelper.close();
@@ -128,17 +135,16 @@ public class Database {
 	 * Adds a new <code>Medication</code> object to the database.
 	 * @param medication	An instance of <code>Medication</code> to commit to the database.
 	 * @return				True if the record was successfully added; false otherwise.
-	 * @throws IllegalArgumentException
 	 */
-	public static boolean addMedication(Medication medication) throws IllegalArgumentException {
+	public static boolean addMedication(Medication medication) {
 		if (medication == null) {
-			throw new IllegalArgumentException("'medication' cannot be null.");
+			System.err.printf("[DB] 'medication' cannot be null.\n");
+			return false;
 		}
 		
 		openDatabase();
 		
 		ContentValues values = new ContentValues();
-		// values.putNull("_id");
 		values.put("name", medication.getName());
 		values.put("image", medication.getImageAsByteArray());
 		values.put("dosage", medication.getDosage());
@@ -162,19 +168,21 @@ public class Database {
 	 * 						Valid keys include name, image, dosage, notes, currentPillCount, maximumPillCount,
 	 * 						refillDate, and reminderDate.
 	 * @return				True if the record was successfully updated; false otherwise.
-	 * @throws IllegalArgumentException
 	 */
-	public static boolean updateMedicationById(int id, ContentValues values) throws IllegalArgumentException {
+	public static boolean updateMedicationById(int id, ContentValues values) {
 		if (getMedicationById(id) == null) {
-			throw new IllegalArgumentException("Medication with id " + id + " does not exist.");
+			System.err.printf("[DB] Couldn't find medication with id=%d.\n", id);
+			return false;
 		}
 		
 		if (values == null || values.size() == 0) {
-			throw new IllegalArgumentException("'values' must not be null and must contain at least one key-value pair.");
+			System.err.printf("[DB] 'values' provided is null or empty.\n");
+			return false;
 		}
 		
 		if (values.containsKey("id") || values.containsKey("_id")) {
-			throw new IllegalArgumentException("You cannot update the table's primary key.");
+			System.err.printf("[DB] Don't attempt to update record's primary key!\n");
+			return false;
 		}
 		
 		openDatabase();
@@ -190,11 +198,11 @@ public class Database {
 	 * @param values		An instance of <code>ContentValues</code> containing the updated values.
 	 * 						Valid keys include name, image, dosage, notes, currentPillCount, maximumPillCount, refillDate, and reminderDate.
 	 * @return				True if the record was successfully updated; false otherwise.
-	 * @throws IllegalArgumentException
 	 */
-	public static boolean deleteMedicationById(int id) throws IllegalArgumentException {
+	public static boolean deleteMedicationById(int id) {
 		if (getMedicationById(id) == null) {
-			throw new IllegalArgumentException("Medication with id " + id + " does not exist.");
+			System.err.printf("[DB] Couldn't find medication with id=%d.\n", id);
+			return false;
 		}
 		
 		openDatabase();

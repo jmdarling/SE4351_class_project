@@ -88,11 +88,11 @@ public class AddMedication extends Activity {
 					// Create medication
 					Medication med = new Medication();
 					med.setName(medName.getText().toString());
-					med.setDosage(dosage.getText().toString());
-					med.setMaximumPillCount(Integer.parseInt(pillCount.getText().toString()));
-					med.setCurrentPillCount(Integer.parseInt(pillCount.getText().toString()));
-					med.setNotes(notes.getText().toString());
 					med.setImage(image);
+					med.setDosage(dosage.getText().toString());
+					med.setCurrentPillCount(Integer.parseInt(pillCount.getText().toString()));
+					med.setMaximumPillCount(Integer.parseInt(pillCount.getText().toString()));
+					med.setNotes(notes.getText().toString());
 					
 					Calendar cal = Calendar.getInstance();
 					cal.set(Calendar.HOUR_OF_DAY,timePicker.getCurrentHour());
@@ -109,6 +109,22 @@ public class AddMedication extends Activity {
 				{
 					Database.context = AddMedication.this;
 					Database.deleteMedicationById(editMed.getId());
+					
+					// Update editMed:
+					editMed.setName(medName.getText().toString());
+					editMed.setImage(image);
+					editMed.setDosage(dosage.getText().toString());
+					editMed.setCurrentPillCount(Integer.parseInt(pillCount.getText().toString()));
+					editMed.setMaximumPillCount(Integer.parseInt(pillCount.getText().toString()));
+					editMed.setNotes(notes.getText().toString());
+					
+					Calendar cal = Calendar.getInstance();
+					cal.set(Calendar.HOUR_OF_DAY,timePicker.getCurrentHour());
+					cal.set(Calendar.MINUTE,timePicker.getCurrentMinute());
+					cal.set(Calendar.SECOND,0);
+					cal.set(Calendar.MILLISECOND,0);
+					editMed.setReminderDate(cal.getTime());
+					
 					boolean success = Database.addMedication(editMed);
 					System.out.println("Added med successfully? "+success);
 				}

@@ -174,13 +174,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	/**
 	 * Converts a <code>byte[]</code> to an instance of <code>android.graphics.Bitmap</code>.
 	 * @param blob	The byte array containing pixel data.
-	 * @return		A <code>Bitmap</code> representation of the blob.
+	 * @return		A <code>Bitmap</code> representation of the blob, or null if the blob was not found/invalid.
 	 */
 	public static Bitmap convertByteArrayToBitmap(byte[] blob) {
-		if (blob != null) {
-			return BitmapFactory.decodeByteArray(blob, 0, blob.length);
+		Bitmap bitmap = null;
+				
+		if (blob != null && blob.length > 0) {
+			bitmap = BitmapFactory.decodeByteArray(blob, 0, blob.length);
 		}
 		
-		return null;
+		return bitmap;
 	}
 }
