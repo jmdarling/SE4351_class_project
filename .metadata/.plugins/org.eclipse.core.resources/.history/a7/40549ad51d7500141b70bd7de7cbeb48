@@ -1,0 +1,213 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/back"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:layout_marginTop="50dp"
+        android:gravity="center_horizontal">
+
+        <ImageButton
+            android:id="@+id/imageButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/reminders"
+            android:padding="12dp" 
+            android:onClick="gotoreminders"
+             />
+		        
+        <ImageButton
+            android:id="@+id/imageButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/refills"
+            android:gravity="center"
+            android:layout_marginLeft="40dp" 
+            android:layout_marginRight="40dp"
+            android:onClick="gotorefills"
+            />
+
+        <ImageButton
+            android:id="@+id/imageButton3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/pills"
+            android:onClick="gotopills" 
+            />
+
+    </LinearLayout>
+    
+     <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:gravity="center_horizontal" >
+
+         <TextView
+             android:id="@+id/textView1"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginLeft="30dp"
+             android:includeFontPadding="false"
+             android:scrollHorizontally="false"
+             android:selectAllOnFocus="false"
+             android:text="Reminders"
+             android:textColor="#FF0000"
+             android:textSize="17dp"
+             android:textStyle="bold" />
+
+         <TextView
+             android:id="@+id/textView2"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginLeft="40dp"
+             android:layout_marginRight="60dp"
+             android:text="Refills"
+             android:textColor="#FF0000"
+             android:textSize="17dp"
+             android:textStyle="bold"
+              />
+
+         <TextView
+             android:id="@+id/textView3"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginRight="20dp"
+             android:layout_weight="0.21"
+             android:text="Meds"
+             android:textColor="#FF0000"
+             android:textSize="17dp"
+             android:textStyle="bold" />
+     </LinearLayout>
+
+	 <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:gravity="center_horizontal"
+        android:layout_marginTop="50dp"     
+         >
+
+        <ImageButton
+            android:id="@+id/imageButton4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/history"
+            android:onClick="gotohistory"
+             />
+
+        <ImageButton
+            android:id="@+id/imageButton5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="40dp"
+            android:gravity="center"
+            android:src="@drawable/doctors" 
+            android:onClick="gotodoctors"
+            />
+ 
+        <ImageButton
+            android:id="@+id/imageButton6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/pharm"
+            android:onClick="gotopharm" 
+            />
+
+        
+    </LinearLayout>
+     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:gravity="center_horizontal">
+
+         <TextView
+             android:id="@+id/textView4"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginLeft="5dp"
+             android:layout_marginRight="20dp"
+             android:textColor="#FF0000"
+             android:text="History"
+             android:textStyle="bold"
+             android:textSize="17dp"
+              />
+
+         <TextView
+             android:id="@+id/textView5"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:textColor="#FF0000"
+             android:layout_marginLeft="30dp"
+             android:layout_marginRight="25dp"
+             android:text="Doctors"
+             android:textStyle="bold"
+             android:textSize="17dp"
+              />
+
+         <TextView
+             android:id="@+id/textView6"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:textColor="#FF0000"
+             android:layout_marginLeft="30dp"
+             android:text="Pharms"
+             android:textStyle="bold"
+             android:textSize="17dp" />
+         </LinearLayout>
+
+     <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_marginTop="40dp"
+         android:gravity="center_horizontal" >
+
+         <ImageButton
+             android:id="@+id/imageButton7"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginRight="70dp"
+             android:src="@drawable/settings"
+             android:onClick="gotosettings" 
+             />
+
+         <ImageButton
+             android:id="@+id/imageButton8"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginLeft="80dp"
+             android:src="@drawable/about" 
+             android:onClick="gotoabout"
+             />
+     </LinearLayout>
+
+       <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:gravity="center_horizontal">
+
+         <TextView
+             android:id="@+id/textView7"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:textColor="#FF0000"
+             android:layout_marginRight="80dp"
+             android:text="Settings"
+             android:textStyle="bold"
+             android:textSize="17dp" />
+
+         <TextView
+             android:id="@+id/textView8"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:textColor="#FF0000"
+             android:layout_marginLeft="80dp"
+             android:text="About"
+             android:textStyle="bold" 
+             android:textSize="17dp"/>
+         </LinearLayout>
+	   
+     
+</LinearLayout>

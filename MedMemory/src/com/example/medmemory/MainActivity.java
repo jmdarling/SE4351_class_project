@@ -34,44 +34,48 @@ public class MainActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
 	public void gotoreminders(View view){
-    	setContentView(R.layout.reminders);
     	Intent myintent = new Intent(this, Reminders.class);
+    	startActivity(myintent);
 	}
 	
 	public void gotorefills(View view){
-    	setContentView(R.layout.refills);
     	Intent myintent = new Intent(this, Refills.class);
+    	startActivity(myintent);
 	}
 	
 	public void gotomeds(View view){
-    	setContentView(R.layout.meds);
     	Intent myintent = new Intent(this, Meds.class);
+    	startActivity(myintent);
 	}
 	
 	public void gotohistory(View view){
-    	setContentView(R.layout.history);
     	Intent myintent = new Intent(this, History.class);
+    	startActivity(myintent);
 	}
 	
 	public void gotodoctor(View view){
-    	setContentView(R.layout.doctor);
     	Intent myintent = new Intent(this, Doctor.class);
+    	startActivity(myintent);
 	}
 	
 	public void gotopharms(View view){
-    	setContentView(R.layout.pharm);
     	Intent myintent = new Intent(this, Pharm.class);
+    	startActivity(myintent);
 	}
 	
 	public void gotosettings(View view){
-    	setContentView(R.layout.settings);
     	Intent myintent = new Intent(this, Settings.class);
+    	startActivity(myintent);
 	}
 	
 	public void gotoabout(View view){
-    	setContentView(R.layout.about);
     	Intent myintent = new Intent(this, About.class);
+    	startActivity(myintent);
+	}
+	
+	public void gotoaddmedication(View view){
+    	Intent myintent = new Intent(this, AddMedication.class);
+    	startActivity(myintent);
 	}
 }
