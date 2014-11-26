@@ -1,22 +1,12 @@
 package com.example.medmemory.db;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.io.*;
+import java.text.*;
 import java.util.Locale;
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.*;
+import android.database.*;
+import android.database.sqlite.*;
+import android.graphics.*;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 	// Database info:
@@ -28,7 +18,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private final Context context;
 
 	// DateFormat for parsing strings from the DB:
-	public static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+	public static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 	
 	public DatabaseHelper(Context context) {
 		super(context, DB_NAME, null, 1);
@@ -41,19 +31,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 * @throws IOException
 	 */
 	public void createEmptyDatabase() throws IOException {
-		boolean databaseExists = doesDatabaseExist();
+		// Create the empty database:
+		this.getReadableDatabase();
 		
-		if (!databaseExists) {
-			// Create the empty database:
-			this.getReadableDatabase();
-			
-			// Attempt to copy our premade database to local storage:
-			try {
-				copyPremadeDatabase();
-			}
-			catch (IOException ex) {
-				throw new IOException("Unable to copy database to data directory.");
-			}
+		// Attempt to copy our premade database to local storage:
+		try {
+			copyPremadeDatabase();
+		}
+		catch (IOException ex) {
+			throw new IOException("Unable to copy database to data directory.");
 		}
 	}
 	
@@ -139,6 +125,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	 */
 	public Cursor select(int id) {
 		return database.query(MEDICATION_TABLE, null, "_id = ?", new String[] { Integer.toString(id) }, null, null, null);
+	}
+
+	/**
+	 * Selects all medication records.
+	 * @return			A <code>Cursor</code> pointing to the records.
+	 */
+	public Cursor selectAll() {
+		return database.rawQuery("SELECT * FROM " + MEDICATION_TABLE, null);
 	}
 	
 	/**
