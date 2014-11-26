@@ -6,10 +6,9 @@
 
     <TextView
         android:id="@+id/textView1"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0.10"
-        android:text="Medication" 
+        android:text="Add Medication"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <ScrollView
@@ -17,10 +16,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
         android:layout_below="@+id/textView1" >
 
-        <LinearLayout
+       <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical" >
@@ -29,28 +27,30 @@
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Aspirin"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-            
+                android:layout_marginTop="31dp"
+                android:text="Medication Name"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
             <TextView
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Coumadin"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:text="Dosage"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <Button
+                android:id="@+id/button1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select days and times" />
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Done" />
 
         </LinearLayout>
-        
     </ScrollView>
-
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="Add Medication"
-        android:onClick="gotoaddmedication"
-         />
 
 </RelativeLayout>

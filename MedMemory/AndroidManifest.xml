@@ -23,8 +23,14 @@
             </intent-filter>
         </activity>
         <activity android:name="Reminders" android:parentActivityName=".MainActivity"></activity>
-        
-        
+        <activity android:name="About" android:parentActivityName=".MainActivity"></activity>
+        <activity android:name="Doctors" android:parentActivityName=".MainActivity"></activity>
+        <activity android:name="History" android:parentActivityName=".MainActivity"></activity>
+        <activity android:name="Meds" android:parentActivityName=".MainActivity" android:theme="@android:style/Theme.Black"></activity>
+        <activity android:name="Pharm" android:parentActivityName=".MainActivity"></activity>
+        <activity android:name="Refills" android:parentActivityName=".MainActivity"></activity>
+        <activity android:name="Settings" android:parentActivityName=".MainActivity"></activity>
+        <activity android:name="AddMedication" android:parentActivityName=".Meds" android:theme="@android:style/Theme.Black"></activity>
     </application>
 
 </manifest>
