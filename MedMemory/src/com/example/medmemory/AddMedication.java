@@ -2,13 +2,14 @@ package com.example.medmemory;
 
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Date;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -52,6 +53,7 @@ public class AddMedication extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.addmedication);
+        setTitle("Add Medication");
         
         medName = (TextView) findViewById(R.id.med_name);
         dosage = (TextView) findViewById(R.id.med_dosage);
@@ -180,6 +182,18 @@ public class AddMedication extends Activity {
 			cal.setTime(editMed.getReminderDate());
 			timePicker.setCurrentHour(cal.get(Calendar.HOUR_OF_DAY));
 			timePicker.setCurrentMinute(cal.get(Calendar.MINUTE));
+        }
+        else
+        {
+        	AssetManager assetManager = getAssets();
+        	InputStream in;
+        	try {
+        		in = assetManager.open("default_med_pic.jpg");
+        		image = BitmapFactory.decodeStream(in);
+        		imageView.setImageBitmap(image);
+        	} catch (IOException e) {
+        		e.printStackTrace();
+        	}
         }
 	}
 	

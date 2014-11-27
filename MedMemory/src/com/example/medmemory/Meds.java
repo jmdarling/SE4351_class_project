@@ -26,6 +26,7 @@ public class Meds extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.meds);
+        setTitle("Medication");
         
         // Retrieve all meds
         Database.context = this;
