@@ -2,19 +2,25 @@ package com.example.medmemory;
 
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Date;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -41,6 +47,7 @@ public class AddMedication extends Activity {
 
 	Button saveBtn;
 	Button selectImageBtn;
+	Button testNotificationBtn;
 	
 	Date reminderDate;
 	
@@ -52,6 +59,7 @@ public class AddMedication extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.addmedication);
+        setTitle("Add Medication");
         
         medName = (TextView) findViewById(R.id.med_name);
         dosage = (TextView) findViewById(R.id.med_dosage);
@@ -162,6 +170,18 @@ public class AddMedication extends Activity {
 			}
 		});
         
+        testNotificationBtn = (Button) findViewById(R.id.test_notification_button);
+        testNotificationBtn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				
+				Intent intent = new Intent(AddMedication.this, Notification.class);
+			    startActivity(intent);
+			}
+        	
+        });
+        
         
         Intent intent = getIntent();
         int medId = intent.getIntExtra(MEDICATION_ID, -1);
@@ -180,6 +200,18 @@ public class AddMedication extends Activity {
 			cal.setTime(editMed.getReminderDate());
 			timePicker.setCurrentHour(cal.get(Calendar.HOUR_OF_DAY));
 			timePicker.setCurrentMinute(cal.get(Calendar.MINUTE));
+        }
+        else
+        {
+        	AssetManager assetManager = getAssets();
+        	InputStream in;
+        	try {
+        		in = assetManager.open("default_med_pic.jpg");
+        		image = BitmapFactory.decodeStream(in);
+        		imageView.setImageBitmap(image);
+        	} catch (IOException e) {
+        		e.printStackTrace();
+        	}
         }
 	}
 	
