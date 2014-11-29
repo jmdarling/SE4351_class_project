@@ -149,6 +149,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		long count = database.insert(MEDICATION_TABLE, null, values);
 		return count <= 0 ? false : true;
 	}
+	
+	public int getLastInsertId() {
+		Cursor cursor = database.rawQuery("SELECT seq FROM SQLITE_SEQUENCE WHERE name='" + MEDICATION_TABLE + "'", null);
+		cursor.moveToFirst();
+		return cursor.getInt(0);
+	}
 
 	/**
 	 * Updates a medication record.

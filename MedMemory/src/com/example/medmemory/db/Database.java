@@ -277,4 +277,11 @@ public class Database {
 		
 		return medication.getCurrentPillCount();
 	}
+	
+	public static int getLastInsertId() {
+		openDatabase();
+		int id = databaseHelper.getLastInsertId();
+		databaseHelper.close();
+		return id;
+	}
 }
