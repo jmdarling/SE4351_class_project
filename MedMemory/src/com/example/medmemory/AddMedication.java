@@ -6,16 +6,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Date;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
@@ -112,6 +117,11 @@ public class AddMedication extends Activity {
 					
 					Database.context = AddMedication.this;
 					boolean success = Database.addMedication(med);
+					
+					// Set the alarm.
+					int medId = Database.getLastInsertId();
+					setMedAlarm(medId, cal);
+					
 					System.out.println("Added med successfully? "+success);
 				}
 				else
@@ -135,6 +145,9 @@ public class AddMedication extends Activity {
 					editMed.setReminderDate(cal.getTime());
 					
 					boolean success = Database.addMedication(editMed);
+					
+					// Set the alarm.
+					setMedAlarm(editMed.getId(), cal);
 					System.out.println("Added med successfully? "+success);
 				}
 				
@@ -170,18 +183,27 @@ public class AddMedication extends Activity {
 			}
 		});
         
+        // Test notification button listener.
         testNotificationBtn = (Button) findViewById(R.id.test_notification_button);
         testNotificationBtn.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				
-				Intent intent = new Intent(AddMedication.this, Notification.class);
-			    startActivity(intent);
-			}
-        	
+				// Add notification
+				Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+				
+				NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(AddMedication.this);
+				mBuilder.setSmallIcon(R.drawable.noticon);
+				mBuilder.setContentTitle("It's time to take your medication!");
+				mBuilder.setContentText("Click on this notification to get the details.");
+				mBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
+				mBuilder.setSound(alarmSound);
+				mBuilder.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 });
+				NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+				mNotificationManager.notify(1, mBuilder.build());
+			}	
         });
-        
         
         Intent intent = getIntent();
         int medId = intent.getIntExtra(MEDICATION_ID, -1);
@@ -245,6 +267,15 @@ public class AddMedication extends Activity {
 			imageView.setImageBitmap(image);
 		}
 	    
+	}
+	
+	
+	private void setMedAlarm(int medId, Calendar cal) {
+		// Set an alarm with the alarm manager.
+		Intent myIntent = new Intent(AddMedication.this , NotifyService.class);     
+		AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+		PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 0, myIntent, 0);
+		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 24*60*60*1000 , pendingIntent);  //set repeating every 24 hours
 	}
 	
 	
