@@ -36,6 +36,8 @@
         <activity android:name="AddMedication" android:parentActivityName=".Meds"></activity>
         
         <service android:name="NotifyService"></service>
+        <service android:name="TakeMedNowService"></service>
+        <service android:name="SnoozeService"></service>
         
     </application>
 
