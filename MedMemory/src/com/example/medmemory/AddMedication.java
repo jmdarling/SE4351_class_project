@@ -11,6 +11,7 @@ import java.util.GregorianCalendar;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -120,7 +121,7 @@ public class AddMedication extends Activity {
 					
 					// Set the alarm.
 					int medId = Database.getLastInsertId();
-					setMedAlarm(medId, cal);
+					setMedAlarm(medId, cal, med.getName(), med.getImage(), med.getDosage(), med.getNotes());
 					
 					System.out.println("Added med successfully? "+success);
 				}
@@ -146,8 +147,8 @@ public class AddMedication extends Activity {
 					
 					boolean success = Database.addMedication(editMed);
 					
-					// Set the alarm.
-					setMedAlarm(editMed.getId(), cal);
+					int medId = Database.getLastInsertId();
+					setMedAlarm(medId, cal, editMed.getName(), editMed.getImage(), editMed.getDosage(), editMed.getNotes());
 					System.out.println("Added med successfully? "+success);
 				}
 				
@@ -190,18 +191,42 @@ public class AddMedication extends Activity {
 			@Override
 			public void onClick(View v) {
 				
-				// Add notification
+				// Add notification //////////
+				// Create items for a "TakeMedNow" action.
+				Intent takeMedNowIntent = new Intent(AddMedication.this , TakeMedNowService.class);     
+				PendingIntent takeMedNowPendingIntent = PendingIntent.getService(getApplicationContext(), 0, takeMedNowIntent, 0);
+				String takeMedNowTitle = "Take Now";
+				int takeMedNowIcon = R.drawable.medical87;
+				
+				// Create items for a "Snooze" action.
+				Intent snoozeIntent = new Intent(AddMedication.this , TakeMedNowService.class);     
+				PendingIntent snoozePendingIntent = PendingIntent.getService(getApplicationContext(), 0, snoozeIntent, 0);
+				String snoozeTitle = "Snooze";
+				int snoozeIcon = R.drawable.man322;
+				
+				
 				Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 				
 				NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(AddMedication.this);
+				
+				// Add the "TakeMedNow" and "Snooze" actions.
+				mBuilder.addAction(takeMedNowIcon, takeMedNowTitle, takeMedNowPendingIntent);
+				mBuilder.addAction(snoozeIcon, snoozeTitle, snoozePendingIntent);
+				
+				
 				mBuilder.setSmallIcon(R.drawable.noticon);
-				mBuilder.setContentTitle("It's time to take your medication!");
-				mBuilder.setContentText("Click on this notification to get the details.");
+				mBuilder.setLargeIcon(image);
+				mBuilder.setContentTitle("Take 100mg of Aspirin");
+				mBuilder.setContentText("Take with food, do not take with orange juice.");
+				mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText("Take with food, do not take with orange juice."));
+				mBuilder.setTicker("It's time to take your medication");
 				mBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
 				mBuilder.setSound(alarmSound);
 				mBuilder.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 });
 				NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-				mNotificationManager.notify(1, mBuilder.build());
+				Notification notification = mBuilder.build();
+				notification.flags = Notification.FLAG_ONGOING_EVENT;
+				mNotificationManager.notify(1, notification);
 			}	
         });
         
@@ -270,12 +295,23 @@ public class AddMedication extends Activity {
 	}
 	
 	
-	private void setMedAlarm(int medId, Calendar cal) {
-		// Set an alarm with the alarm manager.
-		Intent myIntent = new Intent(AddMedication.this , NotifyService.class);     
+	private void setMedAlarm(int medId, Calendar cal, String name, Bitmap image, String dosage, String notes) {
+		// **DEBUG** Log the medId
+		System.out.println("medId=" + medId);
+		
+		// Create the intent that will display the notification.
+		Intent intent = new Intent(AddMedication.this , NotifyService.class);
+		
+		// Add the data needed for the notification.
+		intent.putExtra("medId", medId);
+		intent.putExtra("name", name);
+		intent.putExtra("image", image);
+		intent.putExtra("dosage", dosage);
+		intent.putExtra("notes", notes);
+		
+		PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 0, intent, 0);
 		AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-		PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 0, myIntent, 0);
-		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 24*60*60*1000 , pendingIntent);  //set repeating every 24 hours
+		alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
 	}
 	
 	
