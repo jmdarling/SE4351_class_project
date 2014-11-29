@@ -191,6 +191,26 @@ public class Database {
 		databaseHelper.close();
 		return success;
 	}
+	
+	/**
+	 * Updates an existing <code>Medication</code> record in the database.
+	 * @param medication		The Medication object representing the record to update with its values.
+	 * @return					True if the record was successfully updated; false otherwise
+	 */
+	public static boolean updateMedication(Medication medication)
+	{
+		ContentValues values = new ContentValues();
+		values.put("name", medication.getName());
+		values.put("image", medication.getImageAsByteArray());
+		values.put("dosage", medication.getDosage());
+		values.put("notes", medication.getNotes());
+		values.put("currentPillCount", medication.getCurrentPillCount());
+		values.put("maximumPillCount", medication.getMaximumPillCount());
+		values.put("refillDate", DatabaseHelper.dateFormat.format(medication.getRefillDate()));
+		values.put("reminderDate", DatabaseHelper.dateFormat.format(medication.getReminderDate()));
+		
+		return updateMedicationById(medication.getId(), values);
+	}
 
 	/**
 	 * Deletes an existing <code>Medication</code> record in the database.

@@ -126,10 +126,7 @@ public class AddMedication extends Activity {
 					System.out.println("Added med successfully? "+success);
 				}
 				else
-				{
-					Database.context = AddMedication.this;
-					Database.deleteMedicationById(editMed.getId());
-					
+				{	
 					// Update editMed:
 					editMed.setName(medName.getText().toString());
 					editMed.setImage(image);
@@ -144,8 +141,9 @@ public class AddMedication extends Activity {
 					cal.set(Calendar.SECOND,0);
 					cal.set(Calendar.MILLISECOND,0);
 					editMed.setReminderDate(cal.getTime());
-					
-					boolean success = Database.addMedication(editMed);
+
+					Database.context = AddMedication.this;
+					boolean success = Database.updateMedication(editMed);
 					
 					int medId = Database.getLastInsertId();
 					setMedAlarm(medId, cal, editMed.getName(), editMed.getImage(), editMed.getDosage(), editMed.getNotes());
