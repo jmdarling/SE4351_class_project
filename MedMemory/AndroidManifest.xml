@@ -3,10 +3,13 @@
     package="com.example.medmemory"
     android:versionCode="1"
     android:versionName="1.0" >
+    
+    <uses-permission android:name="android.permission.VIBRATE" />
+    
 
     <uses-sdk
         android:minSdkVersion="19"
-        android:targetSdkVersion="19" />
+        android:targetSdkVersion="21" />
 
     <application
         android:allowBackup="true"
@@ -31,6 +34,9 @@
         <activity android:name="Refills" android:parentActivityName=".MainActivity"></activity>
         <activity android:name="Settings" android:parentActivityName=".MainActivity"></activity>
         <activity android:name="AddMedication" android:parentActivityName=".Meds"></activity>
+        
+        <service android:name="NotifyService"></service>
+        
     </application>
 
 </manifest>
