@@ -145,8 +145,7 @@ public class AddMedication extends Activity {
 					Database.context = AddMedication.this;
 					boolean success = Database.updateMedication(editMed);
 					
-					int medId = Database.getLastInsertId();
-					setMedAlarm(medId, cal, editMed.getName(), editMed.getImage(), editMed.getDosage(), editMed.getNotes());
+					setMedAlarm(editMed.getId(), cal, editMed.getName(), editMed.getImage(), editMed.getDosage(), editMed.getNotes());
 					System.out.println("Added med successfully? "+success);
 				}
 				
@@ -181,52 +180,6 @@ public class AddMedication extends Activity {
 				startActivityForResult(chooserIntent, SELECT_PICTURE);
 			}
 		});
-        
-        // Test notification button listener.
-        testNotificationBtn = (Button) findViewById(R.id.test_notification_button);
-        testNotificationBtn.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				
-				// Add notification //////////
-				// Create items for a "TakeMedNow" action.
-				Intent takeMedNowIntent = new Intent(AddMedication.this , TakeMedNowService.class);     
-				PendingIntent takeMedNowPendingIntent = PendingIntent.getService(getApplicationContext(), 0, takeMedNowIntent, 0);
-				String takeMedNowTitle = "Take Now";
-				int takeMedNowIcon = R.drawable.medical87;
-				
-				// Create items for a "Snooze" action.
-				Intent snoozeIntent = new Intent(AddMedication.this , TakeMedNowService.class);     
-				PendingIntent snoozePendingIntent = PendingIntent.getService(getApplicationContext(), 0, snoozeIntent, 0);
-				String snoozeTitle = "Snooze";
-				int snoozeIcon = R.drawable.man322;
-				
-				
-				Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-				
-				NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(AddMedication.this);
-				
-				// Add the "TakeMedNow" and "Snooze" actions.
-				mBuilder.addAction(takeMedNowIcon, takeMedNowTitle, takeMedNowPendingIntent);
-				mBuilder.addAction(snoozeIcon, snoozeTitle, snoozePendingIntent);
-				
-				
-				mBuilder.setSmallIcon(R.drawable.noticon);
-				mBuilder.setLargeIcon(image);
-				mBuilder.setContentTitle("Take 100mg of Aspirin");
-				mBuilder.setContentText("Take with food, do not take with orange juice.");
-				mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText("Take with food, do not take with orange juice."));
-				mBuilder.setTicker("It's time to take your medication");
-				mBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
-				mBuilder.setSound(alarmSound);
-				mBuilder.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 });
-				NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-				Notification notification = mBuilder.build();
-				notification.flags = Notification.FLAG_ONGOING_EVENT;
-				mNotificationManager.notify(1, notification);
-			}	
-        });
         
         Intent intent = getIntent();
         int medId = intent.getIntExtra(MEDICATION_ID, -1);
@@ -289,28 +242,38 @@ public class AddMedication extends Activity {
 			
 			imageView.setImageBitmap(image);
 		}
-	    
 	}
 	
 	
 	private void setMedAlarm(int medId, Calendar cal, String name, Bitmap image, String dosage, String notes) {
-		// **DEBUG** Log the medId
-		System.out.println("medId=" + medId);
+		System.out.println("[DEBUG] AddMedication -> setMedAlarm: function entered");
+		System.out.println("[DEBUG] AddMedication -> setMedAlarm: creating alarm for medId=" + medId);
+		
+		// Ensure that the alarm time is greater than the current time. If not,
+		// increase it my one day.
+		Calendar currentTime = Calendar.getInstance();
+		System.out.println("[DEBUG] AddMedication -> setMedAlarm: current time is " + currentTime.getTimeInMillis());
+		System.out.println("[DEBUG] AddMedication -> setMedAlarm: selected time is " + cal.getTimeInMillis());
+		if (cal.getTimeInMillis() < (currentTime.getTimeInMillis() - 60000)) {
+			System.out.println("[DEBUG] AddMedication -> setMedAlarm: selected time is before current time, roll forward 1 day");
+			cal.add(Calendar.DATE, 1);
+			System.out.println("[DEBUG] AddMedication -> setMedAlarm: rolled forward time is " + cal.getTimeInMillis());
+		}
 		
 		// Create the intent that will display the notification.
 		Intent intent = new Intent(AddMedication.this , NotifyService.class);
 		
 		// Add the data needed for the notification.
 		intent.putExtra("medId", medId);
+		intent.putExtra("cal", cal.getTimeInMillis());
 		intent.putExtra("name", name);
 		intent.putExtra("image", image);
 		intent.putExtra("dosage", dosage);
 		intent.putExtra("notes", notes);
 		
-		PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 0, intent, 0);
+		PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 		AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
 		alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+		System.out.println("[DEBUG] AddMedication -> setMedAlarm: alarm created for medId=" + medId + " to be triggered at time=" + cal.getTimeInMillis());
 	}
-	
-	
 }

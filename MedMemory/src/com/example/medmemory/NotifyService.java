@@ -1,5 +1,8 @@
 package com.example.medmemory;
 
+import java.util.Calendar;
+
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -17,18 +20,30 @@ public class NotifyService extends Service {
 	
 	@Override
 	public int onStartCommand (Intent intent, int flags, int startId) {
-		// Get info from the intent.
+		System.out.println("[DEBUG] NotifyService -> onStartCommand: function entered");
+		
+		// Get message info from the intent.
 		Bundle extras = intent.getExtras();
 		int medId = extras.getInt("medId");
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(extras.getLong("cal"));
 		String name = extras.getString("name");
 		Bitmap image = (Bitmap) extras.getParcelable("image");
 		String dosage = extras.getString("dosage");
 		String notes = extras.getString("notes");
 		
+		System.out.println("[DEBUG] NotifyService -> onStartCommand: processing notification for medId=" + medId);
+		System.out.println("[DEBUG] NotifyService -> onStartCommand: passed in time=" + cal.getTimeInMillis());
+				
 		// Prereqs to build notification //////////
 		// Create items for a "TakeMedNow" action.
 		Intent takeMedNowIntent = new Intent(this , TakeMedNowService.class);
 		takeMedNowIntent.putExtra("medId", medId);
+		takeMedNowIntent.putExtra("cal", cal.getTimeInMillis());
+		takeMedNowIntent.putExtra("name", name);
+		takeMedNowIntent.putExtra("image", image);
+		takeMedNowIntent.putExtra("dosage", dosage);
+		takeMedNowIntent.putExtra("notes", notes);
 		PendingIntent takeMedNowPendingIntent = PendingIntent.getService(getApplicationContext(), 0, takeMedNowIntent, 0);
 		String takeMedNowTitle = "Take Now";
 		int takeMedNowIcon = R.drawable.medical87;
@@ -36,6 +51,7 @@ public class NotifyService extends Service {
 		// Create items for a "Snooze" action.
 		Intent snoozeIntent = new Intent(this , SnoozeService.class);
 		snoozeIntent.putExtra("medId", medId);
+		snoozeIntent.putExtra("cal", cal.getTimeInMillis());
 		snoozeIntent.putExtra("name", name);
 		snoozeIntent.putExtra("image", image);
 		snoozeIntent.putExtra("dosage", dosage);
@@ -66,6 +82,8 @@ public class NotifyService extends Service {
 		notification.flags = Notification.FLAG_ONGOING_EVENT;
 		mNotificationManager.notify(medId, notification);
 		
+		renewNotification(medId, cal, name, image, dosage, notes);
+		
 		stopSelf();
 		return START_STICKY;
 	}
@@ -74,5 +92,32 @@ public class NotifyService extends Service {
 	public IBinder onBind(Intent intent) {
 		return null;
 	}
-
+	
+	/**
+	 * Reschedules a new notification for 24 hours later.
+	 */
+	private void renewNotification(int medId, Calendar cal, String name, Bitmap image, String dosage, String notes) {
+		System.out.println("[DEBUG] NotifyService -> renewNotification: function entered");
+		
+		// Create the intent that will display the notification.
+		Intent intent = new Intent(this , NotifyService.class);
+		
+		// Increase the time for the notification by a day.
+		System.out.println("[DEBUG] NotifyService -> renewNotification: updating time for notification");
+		System.out.println("[DEBUG] NotifyService -> renewNotification:passed in time=" + cal.getTimeInMillis());
+		cal.add(Calendar.DATE, 1);
+		System.out.println("[DEBUG] NotifyService -> renewNotification:updated time=" + cal.getTimeInMillis());
+		
+		// Add the data needed for the notification.
+		intent.putExtra("medId", medId);
+		intent.putExtra("cal", cal.getTimeInMillis());
+		intent.putExtra("name", name);
+		intent.putExtra("image", image);
+		intent.putExtra("dosage", dosage);
+		intent.putExtra("notes", notes);
+		
+		PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 0, intent, 0);
+		AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+		alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+	}
 }
