@@ -41,8 +41,8 @@ public class SnoozeService extends Service {
 		
 		// Tell the user that we will get back to them.
 		Context context = getApplicationContext();
-		String text = "We'll remind you in a few minutes.";
-		int duration = Toast.LENGTH_SHORT;
+		String text = "We'll remind you in ten minutes.";
+		int duration = Toast.LENGTH_LONG;
 
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.show();
@@ -59,7 +59,7 @@ public class SnoozeService extends Service {
 	}
 	
 	/**
-	 * Reschedules a new notification for 5 minutes later.
+	 * Reschedules a new notification for 10 minutes later.
 	 */
 	private void renewNotification(int medId, Calendar cal, String name, Bitmap image, String dosage, String notes) {
 		// Create the intent that will display the notification.
@@ -67,7 +67,7 @@ public class SnoozeService extends Service {
 		
 		// Increase the time for the notification by a day.
 		System.out.println(cal.getTimeInMillis());
-		cal.add(Calendar.MINUTE, 5);
+		cal.add(Calendar.MINUTE, 10);
 		System.out.println(cal.getTimeInMillis());
 		
 		
@@ -79,7 +79,7 @@ public class SnoozeService extends Service {
 		intent.putExtra("dosage", dosage);
 		intent.putExtra("notes", notes);
 		
-		PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 0, intent, 0);
+		PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), medId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
 		alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
 	}

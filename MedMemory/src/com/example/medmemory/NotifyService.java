@@ -44,7 +44,7 @@ public class NotifyService extends Service {
 		takeMedNowIntent.putExtra("image", image);
 		takeMedNowIntent.putExtra("dosage", dosage);
 		takeMedNowIntent.putExtra("notes", notes);
-		PendingIntent takeMedNowPendingIntent = PendingIntent.getService(getApplicationContext(), 0, takeMedNowIntent, 0);
+		PendingIntent takeMedNowPendingIntent = PendingIntent.getService(getApplicationContext(), medId, takeMedNowIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		String takeMedNowTitle = "Take Now";
 		int takeMedNowIcon = R.drawable.medical87;
 		
@@ -56,7 +56,7 @@ public class NotifyService extends Service {
 		snoozeIntent.putExtra("image", image);
 		snoozeIntent.putExtra("dosage", dosage);
 		snoozeIntent.putExtra("notes", notes);
-		PendingIntent snoozePendingIntent = PendingIntent.getService(getApplicationContext(), 0, snoozeIntent, 0);
+		PendingIntent snoozePendingIntent = PendingIntent.getService(getApplicationContext(), medId, snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		String snoozeTitle = "Snooze";
 		int snoozeIcon = R.drawable.man322;
 		
@@ -116,7 +116,7 @@ public class NotifyService extends Service {
 		intent.putExtra("dosage", dosage);
 		intent.putExtra("notes", notes);
 		
-		PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 0, intent, 0);
+		PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), medId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
 		alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
 	}
