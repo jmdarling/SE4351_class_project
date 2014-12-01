@@ -18,6 +18,9 @@ import android.support.v4.app.NotificationCompat;
 
 public class NotifyService extends Service {
 	
+	public static final int TAKE_MED_ID_OFFSET = 1000000;
+	public static final int SNOOZE_ID_OFFSET = 1000000;
+	
 	@Override
 	public int onStartCommand (Intent intent, int flags, int startId) {
 		System.out.println("[DEBUG] NotifyService -> onStartCommand: function entered");
@@ -41,10 +44,10 @@ public class NotifyService extends Service {
 		takeMedNowIntent.putExtra("medId", medId);
 		takeMedNowIntent.putExtra("cal", cal.getTimeInMillis());
 		takeMedNowIntent.putExtra("name", name);
-		takeMedNowIntent.putExtra("image", image);
+//		takeMedNowIntent.putExtra("image", image);
 		takeMedNowIntent.putExtra("dosage", dosage);
 		takeMedNowIntent.putExtra("notes", notes);
-		PendingIntent takeMedNowPendingIntent = PendingIntent.getService(getApplicationContext(), medId, takeMedNowIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent takeMedNowPendingIntent = PendingIntent.getService(getApplicationContext(), TAKE_MED_ID_OFFSET+medId, takeMedNowIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		String takeMedNowTitle = "Take Now";
 		int takeMedNowIcon = R.drawable.medical87;
 		
@@ -53,10 +56,10 @@ public class NotifyService extends Service {
 		snoozeIntent.putExtra("medId", medId);
 		snoozeIntent.putExtra("cal", cal.getTimeInMillis());
 		snoozeIntent.putExtra("name", name);
-		snoozeIntent.putExtra("image", image);
+//		snoozeIntent.putExtra("image", image);
 		snoozeIntent.putExtra("dosage", dosage);
 		snoozeIntent.putExtra("notes", notes);
-		PendingIntent snoozePendingIntent = PendingIntent.getService(getApplicationContext(), medId, snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent snoozePendingIntent = PendingIntent.getService(getApplicationContext(), SNOOZE_ID_OFFSET+medId, snoozeIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		String snoozeTitle = "Snooze";
 		int snoozeIcon = R.drawable.man322;
 		

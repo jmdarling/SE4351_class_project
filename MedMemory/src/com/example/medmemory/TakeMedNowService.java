@@ -29,7 +29,7 @@ public class TakeMedNowService extends Service {
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(extras.getLong("cal"));
 		String name = extras.getString("name");
-		Bitmap image = (Bitmap) extras.getParcelable("image");
+//		Bitmap image = (Bitmap) extras.getParcelable("image");
 		String dosage = extras.getString("dosage");
 		String notes = extras.getString("notes");
 		

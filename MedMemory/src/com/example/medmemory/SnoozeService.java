@@ -27,7 +27,7 @@ public class SnoozeService extends Service {
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(extras.getLong("cal"));
 		String name = extras.getString("name");
-		Bitmap image = (Bitmap) extras.getParcelable("image");
+//		Bitmap image = (Bitmap) extras.getParcelable("image");
 		String dosage = extras.getString("dosage");
 		String notes = extras.getString("notes");
 		
@@ -47,7 +47,7 @@ public class SnoozeService extends Service {
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.show();
 		
-		renewNotification(medId, cal, name, image, dosage, notes);
+		renewNotification(medId, cal, name, dosage, notes);
 
 		stopSelf();
 		return START_STICKY;
@@ -61,7 +61,7 @@ public class SnoozeService extends Service {
 	/**
 	 * Reschedules a new notification for 10 minutes later.
 	 */
-	private void renewNotification(int medId, Calendar cal, String name, Bitmap image, String dosage, String notes) {
+	private void renewNotification(int medId, Calendar cal, String name, String dosage, String notes) {
 		// Create the intent that will display the notification.
 		Intent intent = new Intent(this , NotifyService.class);
 		
@@ -75,7 +75,7 @@ public class SnoozeService extends Service {
 		intent.putExtra("medId", medId);
 		intent.putExtra("cal", cal.getTimeInMillis());
 		intent.putExtra("name", name);
-		intent.putExtra("image", image);
+//		intent.putExtra("image", image);
 		intent.putExtra("dosage", dosage);
 		intent.putExtra("notes", notes);
 		
