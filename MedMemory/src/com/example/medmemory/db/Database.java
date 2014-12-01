@@ -10,6 +10,11 @@ import android.graphics.Bitmap;
 import com.example.medmemory.model.Medication;
 
 public class Database {
+	/**
+	 * The limit in bytes of the Medication image.
+	 */
+	public static final int IMAGE_SIZE_LIMIT = 1048576;
+	
 	private static DatabaseHelper databaseHelper = null;
 	
 	public static Context context;

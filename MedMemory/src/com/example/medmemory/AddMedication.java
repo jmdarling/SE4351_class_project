@@ -33,6 +33,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.example.medmemory.db.Database;
 import com.example.medmemory.model.Medication;
@@ -216,8 +217,10 @@ public class AddMedication extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		
 		if(requestCode == SELECT_PICTURE && resultCode == RESULT_OK)
 		{
+			Bitmap receivedImage = null;
 			if(data.getData() != null) // Gallery returned data
 			{
 				Uri selectedImage = data.getData();
@@ -228,7 +231,7 @@ public class AddMedication extends Activity {
 				{
 					parcelFD = getContentResolver().openFileDescriptor(selectedImage, "r");
 					FileDescriptor fd = parcelFD.getFileDescriptor();
-					image = BitmapFactory.decodeFileDescriptor(fd);
+					receivedImage = BitmapFactory.decodeFileDescriptor(fd);
 				} catch (FileNotFoundException e)
 				{
 					e.printStackTrace();
@@ -237,10 +240,24 @@ public class AddMedication extends Activity {
 			else // Camera returned data
 			{
 				Bundle extras = data.getExtras();
-				image = (Bitmap) extras.get("data");
+				receivedImage = (Bitmap) extras.get("data");
 			}
 			
-			imageView.setImageBitmap(image);
+			
+			if(receivedImage != null && receivedImage.getByteCount() <= Database.IMAGE_SIZE_LIMIT)
+			{
+				System.out.println("Using user provided image. Size: "+receivedImage.getByteCount());
+				image = receivedImage;
+				imageView.setImageBitmap(image);
+			}
+			else
+			{
+				System.out.println("Image too big. Size: "+receivedImage.getByteCount());
+				Toast.makeText(this, "Sorry, that image is too large. This prototype supports images <1MB.", Toast.LENGTH_LONG).show();
+				image = receivedImage;
+				imageView.setImageBitmap(image);
+			}
+			
 		}
 	}
 	
