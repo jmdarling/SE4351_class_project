@@ -185,7 +185,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public static Bitmap convertByteArrayToBitmap(byte[] blob) {
 		Bitmap bitmap = null;
 				
-		if (blob != null && blob.length > 0) {
+		if (blob != null && blob.length > 0 && blob.length < 30000) {
 			bitmap = BitmapFactory.decodeByteArray(blob, 0, blob.length);
 		}
 		

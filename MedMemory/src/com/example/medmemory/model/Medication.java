@@ -114,10 +114,16 @@ public class Medication {
 		}
 		
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-		boolean success = this.image.compress(Bitmap.CompressFormat.PNG, 100, outStream);
+		boolean success = this.image.compress(Bitmap.CompressFormat.JPEG, 50, outStream);
 		byte[] buffer = outStream.toByteArray();
 		
 		if (success && buffer.length > 0) {
+			// Ensure image in byte form is sufficiently compressed for SQLite storage:
+			while (buffer.length >= Integer.MAX_VALUE) {
+				this.image.compress(Bitmap.CompressFormat.JPEG, 50, outStream);
+				buffer = outStream.toByteArray();
+			}
+			
 			return buffer;
 		}
 
