@@ -138,7 +138,7 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/doc" 
                 style="?android:attr/borderlessButtonStyle"
-                android:onClick="gotodoctors"
+                android:onClick="gotodoctor"
                 />
      
             <TextView
@@ -165,7 +165,7 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/prm"
                 style="?android:attr/borderlessButtonStyle"
-                android:onClick="gotopharm" 
+                android:onClick="gotopharms" 
                 />    
          <TextView
              android:id="@+id/textView6"
